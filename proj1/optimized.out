@@ -1,2 +1,2 @@
-loadI 1024 => r0
-loadI -1 => r3
+loadI 3 => r1
+lshiftI r1, 2 => r3

@@ -14,7 +14,6 @@
 #include "Utils.h"
 #include <math.h>
 
-
 int isPowerOfTwo(int);
 int getPowerOfTwo(int);
 
@@ -28,20 +27,61 @@ int main()
 		exit(EXIT_FAILURE);
 	}
 
-        // next 2 instructions per iteration
-        Instruction *ptr, *prev,*next;
-        ptr= prev = next =  NULL;
+        // third 2 instructions per iteration
+        Instruction *first, *second;
+        first = second = NULL;
 
-        ptr = head;
-        while (ptr){
-            int shift, op;
-            prev = ptr->prev;
-            next = ptr->next;
-            if (prev && prev->opcode == LOADI) {
+        first = head;
+        while (first){
+            int op, shift, rb, rc;
+            op = shift = rb = rc = 0;
 
+            second = first->next;
+            if (!second) {
+                first = first->next;
+                continue;
             }
+            if (!isLOADI(first)) {
+                first = first->next;
+                continue;
+            }
+            if (second->field2 != first->field2) {
+                first = first->next;
+                continue;
+            }
+            shift = getPowerOfTwo(first->field1);
+            if (shift == -1) {
+                first = first->next;
+                continue;
+            }
+            switch (second->opcode) {
+                case MUL:
+                    op = LSHIFTI; 
+                    break;
+                case DIV:
+                    op = RSHIFTI; 
+                    break;
+                default:
+                    first = first->next;
+                    continue;
+            }
+            rb = second->field1;
+            rc = second->field3;
+            
+            // Apply strength reduction
+            first->opcode = op;
+            first->field1 = rb;
+            first->field2 = shift;
+            first->field3 = rc;
+
+            // fix pointers before freeing
+            first->next = second->next;
+
+            // delete unoptimized instruction
+            free(second);
+
             // slide window to right by one instruction
-            ptr = ptr->next;
+            first = first->next;
         }
         if (!head) {
             exit(EXIT_FAILURE);
