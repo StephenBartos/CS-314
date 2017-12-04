@@ -32,8 +32,7 @@
 ;;OUTPUT:true(#t) or false(#f)
 (define spell-checker 
   (lambda (w)
-   'SOME_CODE_GOES_HERE ;; *** FUNCTION BODY IS MISSING *** 
-   ))
+    (if (member w dictionary) #t #f)))
 
 ;; -----------------------------------------------------
 ;; ENCODING FUNCTIONS
@@ -44,7 +43,7 @@
 (define encode-n
   (lambda (n);;"n" is the distance, eg. n=3: a->d,b->e,...z->c
     (lambda (w);;"w" is the word to be encoded
-     'SOME_CODE_GOES_HERE ;; *** FUNCTION BODY IS MISSING ***
+
       )))
 
 ;;encode a document
